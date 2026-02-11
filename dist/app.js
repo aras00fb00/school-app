@@ -447,10 +447,6 @@ function closeMenuUI() {
 
 /* =========================================================
 2) PAGES (Dashboard ↔ Maps ↔ Students) — FINAL
-- ✅ panel başlangıçta kapalı (panel modülü aç/kapatır)
-- ✅ arama box sadece maps sayfasında; panelin açık/kapalı olmasından etkilenmez
-- ✅ setPanelVisible artık panel-search'e dokunmaz
-- ✅ Students sayfası eklendi (panel kapalı, map search gizli)
 ========================================================= */
 (function initPages() {
   if (window.App.inited.pages) return;
@@ -458,38 +454,35 @@ function closeMenuUI() {
 
   const $dashboardPage = $("#pageDashboard");
   const $mapsPage = $("#pageMaps");
-  const $studentsPage = $("#pageStudents"); // ✅ NEW
+  const $studentsPage = $("#pageStudents");
 
   function setPanelVisible(on) {
     const wrap = document.getElementById("panel-wrap");
     const toggle = document.getElementById("panelToggle");
-    // ⚠️ panel-search artık nav altına dock ediliyor; burada yönetmiyoruz
 
     if (wrap) wrap.style.display = on ? "" : "none";
     if (toggle) toggle.style.display = on ? "" : "none";
-
     if (!on && wrap) wrap.classList.remove("open");
   }
 
-  function deactivateAllPages() {
+  function hideAllPages() {
     $dashboardPage.removeClass("active");
     $mapsPage.removeClass("active");
     $studentsPage.removeClass("active");
   }
 
-  function hideMapsOnlyUI() {
-    // ✅ maps dışına çıkınca arama dock gizlensin
-    try { if (typeof window.setMapSearchVisible === "function") window.setMapSearchVisible(false); } catch(e){}
-    // ✅ maps dışına çıkınca lock UI kapat (varsa)
-    try { if (typeof window.hideSchoolLockUI === "function") window.hideSchoolLockUI(); } catch(e){}
-  }
-
   function showDashboard() {
-    deactivateAllPages();
+    hideAllPages();
     $dashboardPage.addClass("active");
 
     setPanelVisible(false);
-    hideMapsOnlyUI();
+    hideSchoolLockUI();
+
+    // maps dışına çıkınca arama dock gizlensin
+    try { if (typeof window.setMapSearchVisible === "function") window.setMapSearchVisible(false); } catch(e){}
+
+    // students çıkarken destroy
+    try { if (typeof window.StudentsPageDestroy === "function") window.StudentsPageDestroy(); } catch(e){}
 
     if (window.App.miniMap) setTimeout(() => window.App.miniMap.invalidateSize(true), 50);
   }
@@ -497,7 +490,7 @@ function closeMenuUI() {
   function showMaps() {
     closeMenuUI();
 
-    deactivateAllPages();
+    hideAllPages();
     $mapsPage.addClass("active");
 
     setPanelVisible(true);
@@ -507,33 +500,34 @@ function closeMenuUI() {
       const map = getMap();
       if (map) map.invalidateSize(true);
 
-      // ✅ Harita açılır açılmaz kilit uygula
       enforceSchoolLock();
 
-      // ✅ maps sayfasına girince arama dock durumu (okul sabitse açılır)
       try {
         if (typeof window.setMapSearchVisible === "function") window.setMapSearchVisible(isSchoolFixed());
       } catch(e){}
     });
+
+    // students çıkarken destroy
+    try { if (typeof window.StudentsPageDestroy === "function") window.StudentsPageDestroy(); } catch(e){}
   }
 
   function showStudents() {
     closeMenuUI();
 
-    deactivateAllPages();
+    hideAllPages();
     $studentsPage.addClass("active");
 
-    // ✅ Students sayfasında panel/map UI istemiyoruz
+    // maps UI kapat
     setPanelVisible(false);
-    hideMapsOnlyUI();
+    hideSchoolLockUI();
 
-    // ✅ Students sayfası init'i (students.js içinde tanımlarsan çalışır)
+    try { if (typeof window.setMapSearchVisible === "function") window.setMapSearchVisible(false); } catch(e){}
+
+    // students init
     try { if (typeof window.StudentsPageInit === "function") window.StudentsPageInit(); } catch(e){}
   }
 
-  // ===========================
-  // NAV: Maps
-  // ===========================
+  // Menü linkleri
   $("#accordion")
     .off("click.pages", ".submenu a[data-page='maps']")
     .on("click.pages", ".submenu a[data-page='maps']", function (e) {
@@ -541,21 +535,19 @@ function closeMenuUI() {
       showMaps();
     });
 
-  $(document)
-    .off("click.pages", "[data-page='maps']")
-    .on("click.pages", "[data-page='maps']", function (e) {
-      e.preventDefault();
-      showMaps();
-    });
-
-  // ===========================
-  // NAV: Students (NEW)
-  // ===========================
   $("#accordion")
     .off("click.pages", ".submenu a[data-page='students']")
     .on("click.pages", ".submenu a[data-page='students']", function (e) {
       e.preventDefault();
       showStudents();
+    });
+
+  // Dashboard kartları (data-page olan her şey)
+  $(document)
+    .off("click.pages", "[data-page='maps']")
+    .on("click.pages", "[data-page='maps']", function (e) {
+      e.preventDefault();
+      showMaps();
     });
 
   $(document)
@@ -565,9 +557,7 @@ function closeMenuUI() {
       showStudents();
     });
 
-  // ===========================
-  // Back to Dashboard
-  // ===========================
+  // Map geri
   $("#backToDashboard")
     .off("click.pages")
     .on("click.pages", function (e) {
@@ -575,13 +565,11 @@ function closeMenuUI() {
       showDashboard();
     });
 
-  // Students sayfasındaki "Dashboard" butonu için (HTML'de data-page="dashboard" var)
+  // Students geri (butonuna data-page="dashboard" verdiysen bu da çalışır)
   $(document)
     .off("click.pages", "[data-page='dashboard']")
     .on("click.pages", "[data-page='dashboard']", function (e) {
       e.preventDefault();
-      // students sayfasından çıkarken destroy istersen burada çağırabilirsin
-      try { if (typeof window.StudentsPageDestroy === "function") window.StudentsPageDestroy(); } catch(e){}
       showDashboard();
     });
 
@@ -610,8 +598,9 @@ function closeMenuUI() {
 
   $(initMiniMap);
 
-  // ✅ başlangıçta hangi sayfa aktifse ona göre panel görünürlüğü
-  setPanelVisible($mapsPage.hasClass("active"));
+  // başlangıçta hangi sayfa aktifse ona göre UI
+  if ($mapsPage.hasClass("active")) setPanelVisible(true);
+  else setPanelVisible(false);
 })();
 
 /* =========================================================
