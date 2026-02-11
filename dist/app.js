@@ -446,10 +446,11 @@ function closeMenuUI() {
 })();
 
 /* =========================================================
-2) PAGES (Dashboard ↔ Maps) — FINAL
+2) PAGES (Dashboard ↔ Maps ↔ Students) — FINAL
 - ✅ panel başlangıçta kapalı (panel modülü aç/kapatır)
 - ✅ arama box sadece maps sayfasında; panelin açık/kapalı olmasından etkilenmez
 - ✅ setPanelVisible artık panel-search'e dokunmaz
+- ✅ Students sayfası eklendi (panel kapalı, map search gizli)
 ========================================================= */
 (function initPages() {
   if (window.App.inited.pages) return;
@@ -457,6 +458,7 @@ function closeMenuUI() {
 
   const $dashboardPage = $("#pageDashboard");
   const $mapsPage = $("#pageMaps");
+  const $studentsPage = $("#pageStudents"); // ✅ NEW
 
   function setPanelVisible(on) {
     const wrap = document.getElementById("panel-wrap");
@@ -469,14 +471,25 @@ function closeMenuUI() {
     if (!on && wrap) wrap.classList.remove("open");
   }
 
-  function showDashboard() {
+  function deactivateAllPages() {
+    $dashboardPage.removeClass("active");
     $mapsPage.removeClass("active");
-    $dashboardPage.addClass("active");
-    setPanelVisible(false);
-    hideSchoolLockUI();
+    $studentsPage.removeClass("active");
+  }
 
+  function hideMapsOnlyUI() {
     // ✅ maps dışına çıkınca arama dock gizlensin
     try { if (typeof window.setMapSearchVisible === "function") window.setMapSearchVisible(false); } catch(e){}
+    // ✅ maps dışına çıkınca lock UI kapat (varsa)
+    try { if (typeof window.hideSchoolLockUI === "function") window.hideSchoolLockUI(); } catch(e){}
+  }
+
+  function showDashboard() {
+    deactivateAllPages();
+    $dashboardPage.addClass("active");
+
+    setPanelVisible(false);
+    hideMapsOnlyUI();
 
     if (window.App.miniMap) setTimeout(() => window.App.miniMap.invalidateSize(true), 50);
   }
@@ -484,7 +497,7 @@ function closeMenuUI() {
   function showMaps() {
     closeMenuUI();
 
-    $dashboardPage.removeClass("active");
+    deactivateAllPages();
     $mapsPage.addClass("active");
 
     setPanelVisible(true);
@@ -504,6 +517,23 @@ function closeMenuUI() {
     });
   }
 
+  function showStudents() {
+    closeMenuUI();
+
+    deactivateAllPages();
+    $studentsPage.addClass("active");
+
+    // ✅ Students sayfasında panel/map UI istemiyoruz
+    setPanelVisible(false);
+    hideMapsOnlyUI();
+
+    // ✅ Students sayfası init'i (students.js içinde tanımlarsan çalışır)
+    try { if (typeof window.StudentsPageInit === "function") window.StudentsPageInit(); } catch(e){}
+  }
+
+  // ===========================
+  // NAV: Maps
+  // ===========================
   $("#accordion")
     .off("click.pages", ".submenu a[data-page='maps']")
     .on("click.pages", ".submenu a[data-page='maps']", function (e) {
@@ -518,10 +548,40 @@ function closeMenuUI() {
       showMaps();
     });
 
+  // ===========================
+  // NAV: Students (NEW)
+  // ===========================
+  $("#accordion")
+    .off("click.pages", ".submenu a[data-page='students']")
+    .on("click.pages", ".submenu a[data-page='students']", function (e) {
+      e.preventDefault();
+      showStudents();
+    });
+
+  $(document)
+    .off("click.pages", "[data-page='students']")
+    .on("click.pages", "[data-page='students']", function (e) {
+      e.preventDefault();
+      showStudents();
+    });
+
+  // ===========================
+  // Back to Dashboard
+  // ===========================
   $("#backToDashboard")
     .off("click.pages")
     .on("click.pages", function (e) {
       e.preventDefault();
+      showDashboard();
+    });
+
+  // Students sayfasındaki "Dashboard" butonu için (HTML'de data-page="dashboard" var)
+  $(document)
+    .off("click.pages", "[data-page='dashboard']")
+    .on("click.pages", "[data-page='dashboard']", function (e) {
+      e.preventDefault();
+      // students sayfasından çıkarken destroy istersen burada çağırabilirsin
+      try { if (typeof window.StudentsPageDestroy === "function") window.StudentsPageDestroy(); } catch(e){}
       showDashboard();
     });
 
@@ -550,7 +610,7 @@ function closeMenuUI() {
 
   $(initMiniMap);
 
-  // ✅ başlangıçta Maps aktif değilse panel görünmesin
+  // ✅ başlangıçta hangi sayfa aktifse ona göre panel görünürlüğü
   setPanelVisible($mapsPage.hasClass("active"));
 })();
 
