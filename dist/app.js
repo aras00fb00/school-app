@@ -486,6 +486,28 @@ function closeMenuUI() {
 
     if (window.App.miniMap) setTimeout(() => window.App.miniMap.invalidateSize(true), 50);
   }
+  // =========================================================
+  // ✅ TEK ROUTER HANDLER (ezilmeye dayanıklı)
+  // - Menü + dashboard kartları + butonlar
+  // - data-page olan her şeyi yönetir
+  // =========================================================
+  $(document)
+    .off("click.routerPages", "[data-page]")
+    .on("click.routerPages", "[data-page]", function (e) {
+      const page = this.getAttribute("data-page");
+      if (!page) return;
+
+      // link/button varsayılanını engelle
+      e.preventDefault();
+
+      // Eğer başka handler'lar stopPropagation yapıyorsa bile
+      // document delegation çoğu senaryoda çalışır.
+      // (Ama capture değil; yine de en dayanıklı yol bu.)
+
+      if (page === "maps") return showMaps();
+      if (page === "students") return showStudents();
+      if (page === "dashboard") return showDashboard();
+    });
 
   function showMaps() {
     closeMenuUI();
@@ -510,6 +532,28 @@ function closeMenuUI() {
     // students çıkarken destroy
     try { if (typeof window.StudentsPageDestroy === "function") window.StudentsPageDestroy(); } catch(e){}
   }
+  // =========================================================
+  // ✅ TEK ROUTER HANDLER (ezilmeye dayanıklı)
+  // - Menü + dashboard kartları + butonlar
+  // - data-page olan her şeyi yönetir
+  // =========================================================
+  $(document)
+    .off("click.routerPages", "[data-page]")
+    .on("click.routerPages", "[data-page]", function (e) {
+      const page = this.getAttribute("data-page");
+      if (!page) return;
+
+      // link/button varsayılanını engelle
+      e.preventDefault();
+
+      // Eğer başka handler'lar stopPropagation yapıyorsa bile
+      // document delegation çoğu senaryoda çalışır.
+      // (Ama capture değil; yine de en dayanıklı yol bu.)
+
+      if (page === "maps") return showMaps();
+      if (page === "students") return showStudents();
+      if (page === "dashboard") return showDashboard();
+    });
 
   function showStudents() {
     closeMenuUI();
