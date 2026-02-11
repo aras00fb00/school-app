@@ -1,0 +1,1173 @@
+/* =========================================================
+📌 1) GLOBAL — GENEL YAPI
+========================================================= */
+html,
+body {
+  height: 100%;
+  background: #f7f7f7;
+}
+
+body {
+  overflow: hidden;
+}
+
+.table {
+  margin-bottom: 0;
+  table-layout: fixed;
+}
+.table td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.table-container {
+  background: #f7f7f7;
+  border-radius: 4px;
+  border-bottom: 1px solid #ddd;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* header+body width senkron */
+.tbl-header table,
+.tbl-content table {
+  width: 100%;
+  table-layout: fixed;
+  margin-bottom: 0;
+}
+
+/* =========================================================
+📌 2) TABLE BODY — SCROLL & FONT
+========================================================= */
+.tbl-content {
+  flex: 1;
+  overflow-y: auto;
+  border-top: 1px solid #eee;
+}
+
+.tbl-content::-webkit-scrollbar {
+  width: 0;
+}
+
+.table thead th {
+  font-size: 13px;
+  letter-spacing: 0.04em;
+}
+
+.table tbody td {
+  text-align: center;
+  vertical-align: middle;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+/* =========================================================
+🎨 3) RENK — ROL ETİKETLERİ
+========================================================= */
+td.drv,
+.icon-line.driver span {
+  color: #a370f7;
+  font-weight: 600;
+}
+
+td.hst,
+.icon-line.anne span {
+  color: #e685b5;
+  font-weight: 600;
+}
+
+td.sup,
+.icon-line.not span {
+  color: #984c0c;
+  font-weight: 600;
+}
+
+/* ================================================
+📌 5) HEADER — TEMA & SORT
+============================================= */
+.tbl-header th {
+  background: #d2f4ea !important;
+  color: #555 !important;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  font-weight: 600;
+}
+
+.tbl-header th .sort-icon span {
+  opacity: 0.35;
+  line-height: 1;
+}
+
+.tbl-header th.active {
+  font-weight: 700;
+  color: #dc3545 !important;
+}
+
+.tbl-header th.asc .down,
+.tbl-header th.desc .up {
+  opacity: 1;
+  color: #dc3545;
+  font-weight: 900;
+}
+
+/* =============================================
+📌 6) FOOTER — BAR
+============================================= */
+.table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  bottom: 0;
+  z-index: 30;
+  background: #f7f7f7;
+  border-top: 2px solid #ddd;
+  padding: 7px;
+}
+
+/* ===============================
+   PAGINATION — LAYOUT
+=============================== */
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.pagination .page-item {
+  list-style: none;
+}
+
+/* ===============================
+   BASE BUTTON (split-btn tabanlı)
+=============================== */
+.pagination .page-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 3px 10px rgba(0, 0, 0, 0.16);
+  transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
+}
+
+.pagination .page-link:hover {
+  filter: brightness(1.05);
+}
+
+.pagination .page-item.number .icon-part {
+  padding: 6px 14px;
+}
+/* ===============================
+   DOTS (…) FIX — FINAL
+=============================== */
+
+.pagination .dots-btn .icon-part {
+  padding: 9px 12px;
+  line-height: 1;
+}
+
+/* dots asla scale almasın */
+.pagination .page-item.dots .split-btn:hover {
+  transform: none;
+  filter: none;
+}
+
+/* ==============================================
+   DISABLED STATE — FINAL (LIGHT + ⛔)
+============================================== */
+
+/* parent referans */
+.pagination .page-item.disabled {
+  position: relative;
+}
+
+/* BUTON */
+.pagination .page-item.disabled .split-btn {
+  background: #e9ecef; /* light */
+  color: #9aa0a6;
+  cursor: not-allowed;
+  opacity: 1;
+  filter: grayscale(0.25);
+  box-shadow: none;
+  transform: none;
+}
+
+/* İKON */
+.pagination .page-item.disabled .icon-part {
+  background: rgba(0, 0, 0, 0.08);
+  color: #9aa0a6;
+}
+
+/* LABEL */
+.pagination .page-item.disabled .label-part {
+  color: #9aa0a6;
+}
+
+/* HOVER'DA HİÇBİR ŞEY DEĞİŞMESİN */
+.pagination .page-item.disabled:hover .split-btn {
+  background: #e9ecef;
+  transform: none;
+  filter: grayscale(0.25);
+  box-shadow: none;
+}
+
+/* ============================================
+   NUMBER BUTTON — SOFT HOVER (LABEL AÇILMADAN)
+============================================ */
+
+/* sadece numaralar */
+.pagination .page-item.number .split-btn {
+  transition: background-color 0.18s ease, box-shadow 0.18s ease,
+    transform 0.18s ease, filter 0.18s ease;
+}
+
+/* hover efekti */
+.pagination .page-item.number:not(.active):hover .split-btn {
+  background: #ffd76a; /* warning → biraz açılmış */
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    0 4px 10px rgba(0, 0, 0, 0.18);
+  transform: scale(1.02);
+  filter: brightness(1.03);
+}
+
+/* ikon (numara) rengi */
+.pagination .page-item.number:not(.active):hover .icon-part {
+  color: #5c3b00;
+}
+
+/* aktif sayfa hover’da oynamasın */
+.pagination .page-item.number.active:hover .split-btn {
+  transform: none;
+  filter: none;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22);
+}
+
+/* ===============================
+   ROW COUNT
+=============================== */
+.rows_count {
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+  white-space: nowrap;
+}
+
+/* =========================================================
+📌 8) TABLO BORDER & ROW STATE
+========================================================= */
+#dataTable {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+#dataTable tbody tr {
+  cursor: pointer;
+  position: relative;
+}
+tbody tr td {
+  color: #6c757d;
+}
+
+/* Hover — danger bold */
+tbody tr:hover td {
+  background-color: #f3f4f5;
+  transition: background-color 0.25s ease;
+}
+
+/* =========================================================
+📌 9) DETAY GÖRÜNÜMÜ
+========================================================= */
+/*.detail-row {
+  pointer-events: none;
+}*/
+.detail-row a,
+.detail-row button {
+  pointer-events: auto;
+}
+
+.row-open td,
+.detail-row td {
+  background: #eaf7f0 !important;
+}
+
+.detail-row td {
+  cursor: default;
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.detail-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.detail-table td {
+  vertical-align: middle;
+  border: none !important;
+  font-size: 13px;
+}
+
+/* ======================================================
+   DETAIL GRID — ORTAK YAPI (TEK KAYNAK)
+====================================================== */
+.detail-grid {
+  display: grid;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Üst blok 2 kolonun altına route satırı geliyorsa */
+.detail-route-bottom {
+  grid-column: 1 / span 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+/* Grid pozisyonları (desktop’ta anlamlı) */
+.detail-srv-center {
+  grid-column: 1;
+}
+.detail-route-center {
+  grid-column: 2;
+}
+.detail-not {
+  grid-column: 3;
+}
+.detail-sinif {
+  grid-column: 4;
+}
+.detail-sabah {
+  grid-column: 5;
+}
+.detail-aksam {
+  grid-column: 6;
+}
+.detail-anne {
+  grid-column: 7;
+}
+.detail-baba {
+  grid-column: 8;
+}
+.detail-islemler {
+  grid-column: 9;
+}
+
+/* MOBILE FIRST: başlangıçta gizli */
+.detail-anne,
+.detail-baba,
+.detail-islemler {
+  display: none;
+}
+
+/* ortak hizalama */
+.detail-grid > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.detail-grid .icon-line {
+  flex-direction: row;
+}
+/* =========================================================
+📌 10) ANA VERİ ALANLARI
+========================================================= */
+td.srv {
+  color: #1aa179;
+  font-weight: 600;
+}
+td.route {
+  color: #fd7e14;
+  font-weight: 600;
+}
+.model-text {
+  color: #a98eda;
+  font-weight: 600;
+  font-size: 13px;
+}
+.route-text {
+  color: #653208;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+/* =========================================================
+📌 11) BORDER — BİRLEŞİK TASARIM
+========================================================= */
+.row-open td {
+  border-bottom: none;
+  border-top: none;
+}
+
+.detail-row td {
+  border: 1px solid #ddd;
+  border-top: none;
+}
+
+.row-open td:first-child {
+  border-left: 1px solid #ddd;
+}
+.row-open td:last-child {
+  border-right: 1px solid #ddd;
+}
+.detail-row td:first-child {
+  border-left: 1px solid #ddd;
+}
+.detail-row td:last-child {
+  border-right: 1px solid #ddd;
+}
+
+/* =========================================================
+📌 12) DETAY ANİMASYONU
+========================================================= */
+.detail-shell {
+  overflow: hidden;
+  height: 0;
+  opacity: 0;
+  transition: height 0.65s cubic-bezier(0.22, 0.61, 0.36, 1), opacity 0.55s ease;
+}
+
+.detail-content {
+  padding: 0;
+  transform: translateY(-8px);
+  transition: transform 0.55s ease;
+}
+
+.detail-row.show .detail-shell {
+  opacity: 1;
+}
+.detail-row.show .detail-content {
+  transform: translateY(0);
+}
+
+/* =========================================================
+📌 13) SPLIT BUTTON
+========================================================= */
+.split-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  overflow: hidden;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+/* split-btn — interaction safety */
+.split-btn.is-interactive {
+  position: relative;
+  z-index: 5;
+  pointer-events: auto;
+}
+
+.icon-part {
+  background: rgba(0, 0, 0, 0.15);
+  padding: 9px 13px;
+  display: flex;
+  align-items: center;
+}
+
+.label-part {
+  opacity: 0;
+  max-width: 0;
+  padding: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  transform: translateX(12px);
+  transition: 0.45s ease;
+}
+
+.split-btn:hover .label-part {
+  opacity: 1;
+  max-width: 240px;
+  padding: 0 8px;
+  transform: translateX(0);
+}
+
+.split-btn.success {
+  background: #75b798;
+}
+.split-btn.primary {
+  background: #c5b3e6;
+}
+.split-btn.secondary {
+  background: #6c757d;
+}
+.split-btn.danger {
+  background: #ea868f;
+}
+.split-btn.warning {
+  background: #ffcd39;
+}
+.split-btn.light {
+  background: #e9ecef;
+}
+.split-btn.info {
+  background: #0dcaf0;
+}
+.split-btn.dark {
+  background: #e685b5;
+}
+.split-btn.edit {
+  background: #79dfc1;
+}
+.split-btn.excel {
+  background: #a370f7;
+}
+
+/* =========================================================
+📌 14) TOOLBAR
+========================================================= */
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.toolbar-left,
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+}
+
+.toolbar select,
+.toolbar input {
+  height: 40px;
+  width: 170px;
+  font-size: 14px;
+}
+
+/* ===============================
+   BAŞLIK + İKON + DİKEY AYRAÇ
+=============================== */
+.tbl-header th {
+  display: table-cell;
+  vertical-align: middle;
+  padding: 8px 6px;
+}
+
+.tbl-header th .th-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.tbl-header th .sort-icon {
+  position: static;
+  transform: none;
+  flex-shrink: 0;
+  font-size: 16px;
+}
+
+.tbl-header th:not(:last-child) {
+  border-right: 2px solid #f7f7f7;
+}
+
+/* ======================================================
+   DETAIL — HÜCRE İÇİ YÖN KONTROLÜ
+====================================================== */
+/* Telefon listeleri ALT ALTA */
+.detail-baba,
+.detail-anne,
+.detail-not {
+  align-items: flex-start;
+}
+
+/* icon + metin */
+.detail-grid .icon-line {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px;
+}
+
+/* ======================================================
+   SERVİS + GÜZERGAH MERKEZ (detail)
+====================================================== */
+.detail-srv,
+.detail-route {
+  font-size: 16px;
+  font-weight: 600;
+}
+/* =========================================================
+📌 DETAIL CONTACT — PASTEL & MINIMAL
+========================================================= */
+
+/* ORTAK YAPI */
+.detail-baba,
+.detail-anne,
+.detail-not {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 4px 8px;
+  border-radius: 4px;
+
+  background: transparent;
+  border: 1px solid transparent;
+
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+/* link reset */
+.detail-baba a,
+.detail-anne a,
+.detail-not a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* icon sade */
+.detail-baba i,
+.detail-anne i,
+.detail-not i {
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+/* ===== RENKLER (PASTEL) ===== */
+
+/* Baba — soft green */
+.detail-baba {
+  color: #3a7f68;
+}
+
+/* Anne — soft rose */
+.detail-anne {
+  color: #9b4f76;
+}
+
+/* Not — soft amber */
+.detail-not {
+  color: #8a6a2f;
+}
+
+/* ===== HOVER DAVRANIŞI ===== */
+.detail-baba:hover,
+.detail-anne:hover,
+.detail-not:hover {
+  background: #fafafa;
+}
+.detail-baba:hover {
+  border-color: rgba(58, 127, 104, 0.25);
+}
+
+.detail-anne:hover {
+  border-color: rgba(155, 79, 118, 0.25);
+}
+
+.detail-not:hover {
+  border-color: rgba(138, 106, 47, 0.25);
+}
+
+/* hover’da ikon biraz belirginleşsin */
+.detail-baba:hover i,
+.detail-anne:hover i,
+.detail-not:hover i {
+  opacity: 0.9;
+}
+/* =========================================================
+📌 ARROW ICON — SOFT FLOW ANIMATION
+========================================================= */
+
+.detail-srv-center .icon-line.arrow {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detail-srv-center .icon-line.arrow i {
+  animation: arrowFlow 2.2s ease-in-out infinite;
+  opacity: 0.5;
+}
+
+/* SAĞA AKIŞ */
+@keyframes arrowFlow {
+  0% {
+    transform: translateX(0);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateX(6px);
+    opacity: 0.75;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 0.4;
+  }
+}
+/* ======================================================
+   MEDIA QUERIES — TABLO + TOOLBAR + DETAIL (FINAL)
+====================================================== */
+@media (max-width: 576px) {
+  .tbl-header th:nth-child(3),
+  #dataTable tbody td:nth-child(3), /* adres */
+  .tbl-header th:nth-child(5),
+  #dataTable tbody td:nth-child(5), /* sabah */
+  .tbl-header th:nth-child(6),
+  #dataTable tbody td:nth-child(6), /* akşam */
+  .tbl-header th:nth-child(7),
+  #dataTable tbody td:nth-child(7), /* anne */
+  .tbl-header th:nth-child(8),
+  #dataTable tbody td:nth-child(8)  /* baba */ {
+    display: none !important;
+  }
+
+  td.srv,
+  td.route,
+  td.drv {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: unset !important;
+  }
+
+  /* ================= TOOLBAR ================= */
+  .toolbar {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .toolbar-left {
+    width: 100%;
+    display: flex;
+    gap: 6px;
+  }
+
+  .toolbar-left select,
+  .toolbar-left input {
+    flex: 1;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .toolbar-right {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    gap: 8px;
+  }
+
+  /* ================= DETAIL ================= */
+  .detail-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .detail-anne,
+  .detail-baba,
+  .detail-sabah,
+  .detail-aksam,
+  .detail-sinif {
+    display: none !important;
+  }
+
+  .table tbody td {
+    font-size: 11px;
+  }
+
+  /* ================= PAGINATION ================= */
+  .pagination {
+    gap: 6px;
+  }
+
+  .pagination .page-item.first,
+  .pagination .page-item.last,
+  .pagination .page-item.prev,
+  .pagination .page-item.next {
+    display: none !important;
+  }
+
+  .pagination .page-item.number {
+    display: flex;
+  }
+
+  .pagination .label-part {
+    display: none !important;
+  }
+}
+
+/*********** 577 - 768 ******************/
+@media (min-width: 577px) and (max-width: 768px) {
+  .tbl-header th:nth-child(3),
+  #dataTable tbody td:nth-child(3), /* adres */
+  .tbl-header th:nth-child(7),
+  #dataTable tbody td:nth-child(7), /* anne */
+  .tbl-header th:nth-child(8),
+  #dataTable tbody td:nth-child(8)  /* baba */ {
+    display: none !important;
+  }
+
+  .tbl-header th {
+    padding: 8px 8px;
+    font-size: 13px;
+  }
+
+  td.srv,
+  td.route,
+  td.drv {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  /* ================= DETAIL ================= */
+  /* srv | route | not(4-5-6 birleşik) | işlemler */
+
+  .detail-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .detail-anne,
+  .detail-baba,
+  .detail-sinif,
+  .detail-sabah,
+  .detail-aksam {
+    display: none !important;
+  }
+
+  .detail-not {
+    grid-column: 3 / span 4;
+  }
+
+  /* ================= PAGINATION ================= */
+  .pagination .page-item.first,
+  .pagination .page-item.last {
+    display: flex;
+  }
+
+  .pagination .page-item.prev,
+  .pagination .page-item.next {
+    display: none !important;
+  }
+
+  .pagination .page-item.number {
+    display: flex;
+  }
+
+  .pagination .page-item.first .label-part,
+  .pagination .page-item.last .label-part {
+    display: flex;
+  }
+
+  .pagination .page-item.number .label-part {
+    display: none;
+  }
+}
+
+/*********** 769 - 992 ******************/
+@media (min-width: 769px) and (max-width: 992px) {
+  /* ================= ROW ================= */
+  /* görünür: Servis No | Ad | Adres | Sınıf | Sabah | Akşam | İşlemler */
+
+  .tbl-header th:nth-child(7),
+  #dataTable tbody td:nth-child(7), /* anne */
+  .tbl-header th:nth-child(8),
+  #dataTable tbody td:nth-child(8)  /* baba */ {
+    display: none !important;
+  }
+
+  .row-open td:last-child {
+    border-right: 1px solid #ddd !important;
+  }
+
+  .tbl-header th {
+    padding: 10px 10px;
+    font-size: 14px;
+  }
+
+  #dataTable tbody td {
+    white-space: nowrap;
+  }
+
+  /* ================= DETAIL ================= */
+  /* srv | route | not(3-4-5-6 birleşik) | işlemler */
+
+  .detail-grid {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .detail-anne,
+  .detail-baba,
+  .detail-sinif,
+  .detail-sabah,
+  .detail-aksam {
+    display: none !important;
+  }
+
+  .detail-not {
+    grid-column: 3 / span 4;
+  }
+
+  .detail-grid .icon-line {
+    flex-direction: column;
+  }
+}
+
+/*********** 993+ ******************/
+@media (min-width: 993px) {
+  .detail-grid {
+    grid-template-columns: repeat(9, minmax(0, 1fr));
+  }
+
+  .detail-not {
+    grid-column: 3 / span 4;
+  }
+
+  .detail-anne,
+  .detail-baba,
+  .detail-not,
+  .detail-islemler {
+    display: flex !important;
+  }
+  .detail-sinif,
+  .detail-sabah,
+  .detail-aksam {
+    display: none !important;
+  }
+
+  .detail-baba,
+  .detail-anne,
+  .detail-not {
+    flex-direction: row !important;
+    gap: 6px;
+  }
+
+  .detail-baba a {
+    display: inline-block;
+  }
+
+  .detail-islemler {
+    flex-direction: row !important;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .table tbody td {
+    font-size: 13px;
+  }
+}
+
+/* ===========================
+   PRINT OUTPUT — SOFT THEME
+   (print.css)
+=========================== */
+
+@page {
+  size: landscape;
+}
+
+.report-box {
+  position: relative;
+  max-width: 1100px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 24px 28px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e8eef6;
+}
+
+/* WATERMARK */
+.report-box::before {
+  content: "Servis Yönetim Sistemi";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-18deg);
+  font-size: 72px;
+  font-weight: 800;
+  color: #5c6f90;
+  opacity: 0.06;
+  pointer-events: none;
+  letter-spacing: 3px;
+  white-space: nowrap;
+}
+
+.report-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.report-logo {
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+}
+
+.report-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.report-sub {
+  font-size: 12px;
+  color: #6b778d;
+}
+
+.report-box th {
+  background: #eef3ff;
+  /* soft header */
+  color: #2c3e50;
+  font-weight: 600;
+  padding: 8px 10px;
+  border-top: 1px solid #dce5ff;
+  border-bottom: 1px solid #dce5ff;
+  font-size: 12px;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.report-box td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #ecf0f4;
+  font-size: 13px;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.report-box tr:nth-child(even) td {
+  background: #fafcff;
+}
+
+.footer {
+  margin-top: 12px;
+  font-size: 11px;
+  color: #777;
+  text-align: right;
+}
+
+@media print {
+  body {
+    background: white;
+  }
+  .report-box {
+    box-shadow: none;
+    border: none;
+    padding: 0;
+  }
+}
+
+/**************** *********************/
+/* DETAIL ROW — BUTTON CLICK FIX */
+.detail-row button,
+.detail-row .split-btn,
+.detail-row .route-detail-btn,
+.detail-row .student-btn {
+  pointer-events: auto;
+  position: relative;
+  z-index: 5;
+}
+
+/* shell click yutmasın 
+.detail-row .detail-shell {
+  pointer-events: none;
+}*/
+/* ✅ Detail row tıklanabilir olsun */
+.detail-row,
+.detail-row td,
+.detail-shell,
+.detail-content {
+  pointer-events: auto;
+}
+
+/* ✅ butonlar üstte kalsın */
+.detail-row .split-btn,
+.detail-row button,
+.detail-row a {
+  position: relative;
+  z-index: 10;
+}
+
+/* içerik tekrar aktif */
+.detail-row .detail-content {
+  pointer-events: auto;
+}
+.student-modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  z-index: 9999;
+}
+
+.student-modal.show {
+  display: flex;
+}
+
+.student-modal-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+}
+
+.student-modal-content {
+  margin: auto;
+  background: #fff;
+  width: min(720px, 94%);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.student-modal-header,
+.student-modal-footer {
+  padding: 12px 16px;
+  background: #f5f5f5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.student-modal-body {
+  padding: 16px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.form-grid textarea {
+  grid-column: span 2;
+  resize: vertical;
+}
