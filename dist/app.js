@@ -452,7 +452,7 @@ function closeMenuUI() {
   if (window.App.inited.pages) return;
   window.App.inited.pages = true;
 
-    function $dashboardPage(){ return $("#pageDashboard"); }
+  function $dashboardPage(){ return $("#pageDashboard"); }
   function $mapsPage(){ return $("#pageMaps"); }
   function $studentsPage(){ return $("#pageStudents"); }
 
@@ -466,54 +466,29 @@ function closeMenuUI() {
   }
 
   function hideAllPages() {
-    $dashboardPage.removeClass("active");
-    $mapsPage.removeClass("active");
-    $studentsPage.removeClass("active");
+    $dashboardPage().removeClass("active");
+    $mapsPage().removeClass("active");
+    $studentsPage().removeClass("active");
   }
 
   function showDashboard() {
     hideAllPages();
-    $dashboardPage.addClass("active");
+    $dashboardPage().addClass("active");
 
     setPanelVisible(false);
     hideSchoolLockUI();
 
-    // maps dışına çıkınca arama dock gizlensin
     try { if (typeof window.setMapSearchVisible === "function") window.setMapSearchVisible(false); } catch(e){}
-
-    // students çıkarken destroy
     try { if (typeof window.StudentsPageDestroy === "function") window.StudentsPageDestroy(); } catch(e){}
 
     if (window.App.miniMap) setTimeout(() => window.App.miniMap.invalidateSize(true), 50);
   }
-  // =========================================================
-  // ✅ TEK ROUTER HANDLER (ezilmeye dayanıklı)
-  // - Menü + dashboard kartları + butonlar
-  // - data-page olan her şeyi yönetir
-  // =========================================================
-  $(document)
-    .off("click.routerPages", "[data-page]")
-    .on("click.routerPages", "[data-page]", function (e) {
-      const page = this.getAttribute("data-page");
-      if (!page) return;
-
-      // link/button varsayılanını engelle
-      e.preventDefault();
-
-      // Eğer başka handler'lar stopPropagation yapıyorsa bile
-      // document delegation çoğu senaryoda çalışır.
-      // (Ama capture değil; yine de en dayanıklı yol bu.)
-
-      if (page === "maps") return showMaps();
-      if (page === "students") return showStudents();
-      if (page === "dashboard") return showDashboard();
-    });
 
   function showMaps() {
     closeMenuUI();
 
     hideAllPages();
-    $mapsPage.addClass("active");
+    $mapsPage().addClass("active");
 
     setPanelVisible(true);
 
@@ -529,9 +504,65 @@ function closeMenuUI() {
       } catch(e){}
     });
 
-    // students çıkarken destroy
     try { if (typeof window.StudentsPageDestroy === "function") window.StudentsPageDestroy(); } catch(e){}
   }
+
+  function showStudents() {
+    closeMenuUI();
+
+    hideAllPages();
+    $studentsPage().addClass("active");
+
+    setPanelVisible(false);
+    hideSchoolLockUI();
+
+    try { if (typeof window.setMapSearchVisible === "function") window.setMapSearchVisible(false); } catch(e){}
+    try { if (typeof window.StudentsPageInit === "function") window.StudentsPageInit(); } catch(e){}
+  }
+
+  // ✅ TEK ROUTER HANDLER
+  $(document)
+    .off("click.routerPages", "[data-page]")
+    .on("click.routerPages", "[data-page]", function (e) {
+      const page = this.getAttribute("data-page");
+      if (!page) return;
+      e.preventDefault();
+
+      if (page === "maps") return showMaps();
+      if (page === "students") return showStudents();
+      if (page === "dashboard") return showDashboard();
+    });
+
+  function initMiniMap() {
+    if (window.App.inited.miniMap) return;
+    window.App.inited.miniMap = true;
+
+    const el = document.getElementById("miniMap");
+    if (!el) return;
+
+    const mini = L.map(el, {
+      zoomControl: false,
+      attributionControl: false,
+      dragging: false,
+      scrollWheelZoom: false,
+      doubleClickZoom: false,
+      boxZoom: false,
+      keyboard: false,
+      tap: false
+    }).setView([41.015, 28.979], 10);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 18 }).addTo(mini);
+    window.App.miniMap = mini;
+    window.__miniMap = mini;
+  }
+
+  $(initMiniMap);
+
+  // başlangıçta hangi sayfa aktifse ona göre UI
+  if ($mapsPage().hasClass("active")) setPanelVisible(true);
+  else setPanelVisible(false);
+})();
+
   // =========================================================
   // ✅ TEK ROUTER HANDLER (ezilmeye dayanıklı)
   // - Menü + dashboard kartları + butonlar
