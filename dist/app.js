@@ -452,9 +452,9 @@ function closeMenuUI() {
   if (window.App.inited.pages) return;
   window.App.inited.pages = true;
 
-  const $dashboardPage = $("#pageDashboard");
-  const $mapsPage = $("#pageMaps");
-  const $studentsPage = $("#pageStudents");
+    function $dashboardPage(){ return $("#pageDashboard"); }
+  function $mapsPage(){ return $("#pageMaps"); }
+  function $studentsPage(){ return $("#pageStudents"); }
 
   function setPanelVisible(on) {
     const wrap = document.getElementById("panel-wrap");
