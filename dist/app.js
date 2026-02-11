@@ -543,22 +543,7 @@ function closeMenuUI() {
       if (page === "dashboard") return showDashboard();
     });
 
-  function showStudents() {
-    closeMenuUI();
-
-    hideAllPages();
-    $studentsPage.addClass("active");
-
-    // maps UI kapat
-    setPanelVisible(false);
-    hideSchoolLockUI();
-
-    try { if (typeof window.setMapSearchVisible === "function") window.setMapSearchVisible(false); } catch(e){}
-
-    // students init
-    try { if (typeof window.StudentsPageInit === "function") window.StudentsPageInit(); } catch(e){}
-  }
-
+  
   // Menü linkleri
   $("#accordion")
     .off("click.pages", ".submenu a[data-page='maps']")
