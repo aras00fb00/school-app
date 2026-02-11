@@ -1,3 +1,37 @@
+/* =========================================================
+👥 STUDENTS PAGE MODULE
+- sayfa açılınca init
+- sayfadan çıkınca destroy
+========================================================= */
+
+window.StudentsPageInit = function () {
+  console.log("StudentsPageInit çalıştı");
+
+  const table = document.querySelector("#studentsTable tbody");
+  if (!table) return;
+
+  // örnek veri (şimdilik)
+  const demo = [
+    { name: "Ali Yılmaz", servis: "A", durum: "Doğrulanmış" },
+    { name: "Ayşe Demir", servis: "B", durum: "Teyit" },
+    { name: "Mehmet Kaya", servis: "-", durum: "Hatalı" }
+  ];
+
+  table.innerHTML = demo.map(d => `
+    <tr>
+      <td>${d.name}</td>
+      <td>${d.servis}</td>
+      <td>${d.durum}</td>
+    </tr>
+  `).join("");
+};
+
+window.StudentsPageDestroy = function () {
+  console.log("StudentsPageDestroy çalıştı");
+
+  // ileride event listener, fetch abort vs burada temizlenecek
+};
+
 /* ==========================================
 1) VERİ VE GLOBAL DEĞİŞKENLER
 ===========================================*/
