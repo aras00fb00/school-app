@@ -520,49 +520,6 @@ function closeMenuUI() {
     try { if (typeof window.StudentsPageInit === "function") window.StudentsPageInit(); } catch(e){}
   }
 
-  // ✅ TEK ROUTER HANDLER
-  $(document)
-    .off("click.routerPages", "[data-page]")
-    .on("click.routerPages", "[data-page]", function (e) {
-      const page = this.getAttribute("data-page");
-      if (!page) return;
-      e.preventDefault();
-
-      if (page === "maps") return showMaps();
-      if (page === "students") return showStudents();
-      if (page === "dashboard") return showDashboard();
-    });
-
-  function initMiniMap() {
-    if (window.App.inited.miniMap) return;
-    window.App.inited.miniMap = true;
-
-    const el = document.getElementById("miniMap");
-    if (!el) return;
-
-    const mini = L.map(el, {
-      zoomControl: false,
-      attributionControl: false,
-      dragging: false,
-      scrollWheelZoom: false,
-      doubleClickZoom: false,
-      boxZoom: false,
-      keyboard: false,
-      tap: false
-    }).setView([41.015, 28.979], 10);
-
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 18 }).addTo(mini);
-    window.App.miniMap = mini;
-    window.__miniMap = mini;
-  }
-
-  $(initMiniMap);
-
-  // başlangıçta hangi sayfa aktifse ona göre UI
-  if ($mapsPage().hasClass("active")) setPanelVisible(true);
-  else setPanelVisible(false);
-})();
-
   // =========================================================
   // ✅ TEK ROUTER HANDLER (ezilmeye dayanıklı)
   // - Menü + dashboard kartları + butonlar
