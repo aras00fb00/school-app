@@ -1457,3 +1457,14 @@ tr:nth-child(even) td{background:#fafcff;}
     alert("Tablo panoya kopyalandı. Excel'e yapıştırabilirsiniz.");
   }
 })();
+// ✅ app.js'nin beklediği global init/destroy hook'ları
+window.StudentsPageInit = function StudentsPageInit() {
+  // burada senin tabloyu render eden init fonksiyonunu çağır
+  // örnek:
+  // renderStudentsTable();
+  // bindStudentsSearch();
+};
+
+window.StudentsPageDestroy = function StudentsPageDestroy() {
+  // sayfadan çıkarken cleanup gerekiyorsa burada yap
+};
