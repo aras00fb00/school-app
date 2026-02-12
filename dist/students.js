@@ -43,6 +43,7 @@
 
     return true;
   }
+console.log("students.js LOADED");
 
   // =========================================================
   // 1) VERİ VE GLOBAL DEĞİŞKENLER
