@@ -1266,26 +1266,27 @@ function initPanelModules(map) {
   const originalNextSibling = panelSearch?.nextElementSibling || null;
 
   function dockSearch() {
-    if (!panelSearch) return;
-    panelSearch.classList.add("is-docked");
-    panelSearch.style.display = "";
-    if (panelSearch.parentElement !== document.body) document.body.appendChild(panelSearch);
-  }
+  if (!panelSearch) return;
+
+  // ✅ navdock modundaysa panel modülü taşımasın
+  if (panelSearch.classList.contains("is-navdock")) return;
+
+  panelSearch.classList.add("is-docked");
+  panelSearch.style.display = "";
+  if (panelSearch.parentElement !== document.body) document.body.appendChild(panelSearch);
+}
+
 
   function undockSearch() {
-    if (!panelSearch) return;
-    panelSearch.classList.remove("is-docked");
+  if (!panelSearch) return;
 
-    if (originalParent) {
-      if (originalNextSibling && originalNextSibling.parentElement === originalParent) {
-        originalParent.insertBefore(panelSearch, originalNextSibling);
-      } else {
-        originalParent.appendChild(panelSearch);
-      }
-    } else if (panelWrap) {
-      panelWrap.prepend(panelSearch);
-    }
-  }
+  // ✅ navdock modundaysa panel modülü geri taşımasın
+  if (panelSearch.classList.contains("is-navdock")) return;
+
+  panelSearch.classList.remove("is-docked");
+  ...
+}
+
 
   window.setPanelSearchHiddenByMenu =
     window.setPanelSearchHiddenByMenu ||
@@ -2257,7 +2258,6 @@ function initPanelSearchModule(map) {
     if (!dock) {
       dock = document.createElement("div");
       dock.id = "mapSearchDock";
-      // submenu/accordion ile birlikte hareket etsin diye nav içine
       nav.appendChild(dock);
     }
     return dock;
@@ -2273,6 +2273,7 @@ function initPanelSearchModule(map) {
   }
 
   function setMapSearchVisible(on) {
+    window.setMapSearchVisible = window.setMapSearchVisible || setMapSearchVisible;
     const ps = document.getElementById("panel-search");
     const dock = document.getElementById("mapSearchDock") || ensureMapSearchDock();
     if (!ps || !dock) return;
@@ -2286,7 +2287,6 @@ function initPanelSearchModule(map) {
     ps.style.display = visible ? "block" : "none";
   }
 
-  // Dock’u hazırla
   movePanelSearchToNavDock();
 
   /* ---------------------------------------------------------
@@ -2305,7 +2305,6 @@ function initPanelSearchModule(map) {
 
   const students = window.App.panel.students;
   const markers = window.App.panel.markers;
-
   const searchInput = document.getElementById("searchBox");
   const suggestBox = document.getElementById("search-suggest");
   const panelSearch = document.getElementById("panel-search");
@@ -2379,11 +2378,14 @@ function initPanelSearchModule(map) {
   // Dış tıklama ile suggest kapansın
   window.App.utils.once("__panelSearchOutsideClose", () => {
     document.addEventListener("click", (e) => {
-      const root = panelSearch || searchInput;
-      if (!root) return;
-      if (!root.contains(e.target)) hideSuggest();
-    }, true);
-  });
+  const ps = panelSearch;
+  const sg = suggestBox;
+  if (!ps) return;
+
+  const inside = ps.contains(e.target) || (sg && sg.contains(e.target));
+  if (!inside) hideSuggest();
+}, true);
+
 
   // Keyboard nav
   searchInput.addEventListener("keydown", (e) => {
