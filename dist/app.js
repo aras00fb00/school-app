@@ -4,6 +4,9 @@
 - ✅ Duplicate handler/DOM thrash/yarış durumları azaltıldı
 - ✅ Guard + throttle + abort + delegate + leak fix
 ========================================================= */
+// ✅ module içinde jQuery güvenli erişim
+const $ = window.jQuery || window.$;
+if (!$) console.warn("jQuery yok: router çalışmayabilir.");
 
 const ORS_KEY =
   "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjdlMTk4ZTE0MTg5ZTRjNzJiMDY2MjM0NDM3ZTEyNjIxIiwiaCI6Im11cm11cjY0In0=";
