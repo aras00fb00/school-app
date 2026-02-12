@@ -532,17 +532,25 @@ function closeMenuUI() {
   }
 
   // ✅ TEK ROUTER HANDLER (tüm data-page’leri tek yerden yönet)
-  $(document)
-    .off("click.routerPages", "[data-page]")
-    .on("click.routerPages", "[data-page]", function (e) {
-      const page = this.getAttribute("data-page");
-      if (!page) return;
-      e.preventDefault();
+  // ✅ module-safe router (jQuery’siz)
+if (!window.__routerPagesBound) {
+  window.__routerPagesBound = true;
 
-      if (page === "maps") return showMaps();
-      if (page === "students") return showStudents();
-      if (page === "dashboard") return showDashboard();
-    });
+  document.addEventListener("click", function (e) {
+    const el = e.target?.closest?.("[data-page]");
+    if (!el) return;
+
+    const page = el.getAttribute("data-page");
+    if (!page) return;
+
+    e.preventDefault();
+
+    if (page === "maps") return showMaps();
+    if (page === "students") return showStudents();
+    if (page === "dashboard") return showDashboard();
+  }, true);
+}
+
 
   // Map geri (back butonu data-page kullanmıyorsa)
   $("#backToDashboard")
